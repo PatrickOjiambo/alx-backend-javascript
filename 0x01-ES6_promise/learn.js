@@ -1,21 +1,29 @@
 doSomething(function (result) {
-    doSomethingElse(result, function (newResult) {
-      doThirdThing(newResult, function (finalResult) {
-        console.log(`Got the final result: ${finalResult}`);
-      }, failureCallback);
-    }, failureCallback);
-  }, failureCallback);
-  function doSomething() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Other things to do before completion of the promise
-        console.log("Did something");
-        // The fulfillment value of the promise
-        resolve("https://example.com/");
-      }, 200);
-    });
-  }
-  /**
+  doSomethingElse(
+    result,
+    function (newResult) {
+      doThirdThing(
+        newResult,
+        function (finalResult) {
+          console.log(`Got the final result: ${finalResult}`);
+        },
+        failureCallback
+      );
+    },
+    failureCallback
+  );
+}, failureCallback);
+function doSomething() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Other things to do before completion of the promise
+      console.log('Did something');
+      // The fulfillment value of the promise
+      resolve('https://example.com/');
+    }, 200);
+  });
+}
+/**
    * Yes, you are correct. In the code snippet you provided, you are using Promises in JavaScript. Each .then() block in the chain represents a step in the asynchronous execution, and the function passed to each .then() block will be called with the resolved value of the previous Promise.
 
 Let me break it down step by step:
@@ -33,7 +41,7 @@ So, each .then() block allows you to process the result of the previous step and
 If at any point in the chain an error occurs (e.g., an exception is thrown or a Promise is rejected), the control will be transferred to the nearest .catch() block, which is the failureCallback in your code. The .catch() block allows you to handle errors that might occur in any of the preceding steps in the Promise chain.
 
    */
-  doSomething()
+doSomething()
   .then(function (result) {
     return doSomethingElse(result);
   })
@@ -45,8 +53,7 @@ If at any point in the chain an error occurs (e.g., an exception is thrown or a 
   })
   .catch(failureCallback);
 
-
-  doSomething()
+doSomething()
   .then((url) => fetch(url))
   .then((res) => res.json())
   .then((data) => {
@@ -64,40 +71,39 @@ async function logIngredients() {
   console.log(listOfIngredients);
 }
 
-
 doSomethingCritical()
   .then((result) =>
     doSomethingOptional(result)
       .then((optionalResult) => doSomethingExtraNice(optionalResult))
-      .catch((e) => {}),
+      .catch((e) => {})
   ) // Ignore if optional stuff fails; proceed.
   .then(() => moreCriticalStuff())
   .catch((e) => console.error(`Critical failure: ${e.message}`));
 
-  async function main() {
+async function main() {
+  try {
+    const result = await doSomethingCritical();
     try {
-      const result = await doSomethingCritical();
-      try {
-        const optionalResult = await doSomethingOptional(result);
-        await doSomethingExtraNice(optionalResult);
-      } catch (e) {
-        // Ignore failures in optional steps and proceed.
-      }
-      await moreCriticalStuff();
+      const optionalResult = await doSomethingOptional(result);
+      await doSomethingExtraNice(optionalResult);
     } catch (e) {
-      console.error(`Critical failure: ${e.message}`);
+      // Ignore failures in optional steps and proceed.
     }
+    await moreCriticalStuff();
+  } catch (e) {
+    console.error(`Critical failure: ${e.message}`);
   }
-  //chaining after catch
-  doSomething()
+}
+//chaining after catch
+doSomething()
   .then(() => {
-    throw new Error("Something failed");
+    throw new Error('Something failed');
 
-    console.log("Do this");
+    console.log('Do this');
   })
   .catch(() => {
-    console.error("Do that");
+    console.error('Do that');
   })
   .then(() => {
-    console.log("Do this, no matter what happened before");
+    console.log('Do this, no matter what happened before');
   });
